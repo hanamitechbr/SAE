@@ -1,183 +1,230 @@
 <?php
-session_start();
+    session_start();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>SAE</title>
+  <title>SAE - Sistema de Agendamento de Equipamentos</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="static/css/styles.css">
+  
 </head>
 
 <body>
-  <!-- <div>
-    <h3>Bem-Vindo ao SAE, professor <span style="color: red;"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span></h3>
-  </div> -->
-  <div class="container class=" card text-white bg-success mb-3"">
-    <form method="POST" action="backend/calendario.php" id="agendamentoForm">
-      <!-- 1️⃣ Data -->
-      <div id="etapa1">
-        <label for="data-agendamento">Selecione a data de agendamento:</label><br>
-        <input type="date" name="data-agendamento" id="data-agendamento"><br>
+  <!-- Header com gradiente verde -->
+  <header class="header-gradient">
+    <div class="container">
+      <div class="row align-items-center py-4">
+        <div class="col-12 text-center">
+          <i class="bi bi-calendar-check header-icon"></i>
+          <h1 class="header-title mb-2">SAE</h1>
+          <p class="header-subtitle">Sistema de Agendamento de Equipamentos</p>
+        </div>
       </div>
+    </div>
+  </header>
 
-      <div id="etapa6">
-        <label for="periodo">Período</label> <br>
-        <select name="periodo" id="periodo">
-          <option value="0">Manhã</option>
-          <option value="1">Tarde</option>
-          <option value="2">Noite</option>
-        </select>
-      </div>
+  <!-- Container principal -->
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-8">
 
-      <!-- 2️⃣ Aulas -->
-      <div id="etapa2" style="display:none;">
-        <label>Selecione as aulas:</label><br>
-        <input type="checkbox" name="aulas[]" value="1"> Aula 1<br>
-        <input type="checkbox" name="aulas[]" value="2"> Aula 2<br>
-        <input type="checkbox" name="aulas[]" value="3"> Aula 3<br>
-        <input type="checkbox" name="aulas[]" value="4"> Aula 4<br>
-        <input type="checkbox" name="aulas[]" value="5"> Aula 5<br>
-        <input type="checkbox" name="aulas[]" value="6"> Aula 6<br>
-        <input type="checkbox" name="aulas[]" value="7"> Aula 7<br>
-      </div>
+        <!-- Card do formulário -->
+        <div class="form-card">
+          <!-- Indicador de progresso -->
+          <div class="progress-container mb-4">
+            <div class="progress-bar-custom">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps">
+              <div class="progress-step active" data-step="1">
+                <div class="step-circle">1</div>
+                <span class="step-label">Data</span>
+              </div>
+              <div class="progress-step" data-step="2">
+                <div class="step-circle">2</div>
+                <span class="step-label">Aulas</span>
+              </div>
+              <div class="progress-step" data-step="3">
+                <div class="step-circle">3</div>
+                <span class="step-label">Equipamento</span>
+              </div>
+              <div class="progress-step" data-step="4">
+                <div class="step-circle">4</div>
+                <span class="step-label">Detalhes</span>
+              </div>
+              <div class="progress-step" data-step="5">
+                <div class="step-circle">5</div>
+                <span class="step-label">Quantidade</span>
+              </div>
+            </div>
+          </div>
 
-      <!-- 3️⃣ Equipamento -->
-      <div id="etapa3" style="display:none;">
-        <label for="equip">Selecione o equipamento:</label><br>
-        <select name="equipamentos" id="equip">
-          <option value="">-- Escolha --</option>
-          <option value="laboratorio">Lab. de Informática</option>
-          <option value="guardiao">Guardião</option>
-        </select>
-      </div>
+          <!-- Formulário -->
+          <form method="POST" action="backend/calendario.php" id="agendamentoForm">
 
-      <!-- 4️⃣ Extras (dinâmico) -->
-      <div id="extra" style="display:none;"></div>
+            <!-- Etapa 1: Data e Período -->
+            <div class="form-step active" id="etapa1">
+              <div class="step-header">
+                <i class="bi bi-calendar3"></i>
+                <h3>Selecione a Data e Período</h3>
+                <p>Escolha quando deseja realizar o agendamento</p>
+              </div>
 
-      <!-- 5️⃣ Quantidade -->
-      <div id="etapa5" style="display:none;">
-        <input type="number" name="quantidade" placeholder="Quantidade de equipamentos" maxlength="40"><br>
-      </div>
-      <button type="submit">Agendar</button>
-    </form>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="data-agendamento" class="form-label">
+                    <i class="bi bi-calendar-event"></i> Data do Agendamento
+                  </label>
+                  <input type="date"
+                         class="form-control form-control-lg"
+                         name="data-agendamento"
+                         id="data-agendamento"
+                         required>
+                </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-      const data = document.getElementById('data-agendamento');
-      const etapa2 = document.getElementById('etapa2');
-      const etapa3 = document.getElementById('etapa3');
-      const etapa5 = document.getElementById('etapa5');
-      const extra = document.getElementById('extra');
-      const equip = document.getElementById('equip');
+                <div class="col-md-6">
+                  <label for="periodo" class="form-label">
+                    <i class="bi bi-clock"></i> Período
+                  </label>
+                  <select name="periodo" id="periodo" class="form-select form-select-lg" required>
+                    <option value="0">🌅 Manhã</option>
+                    <option value="1">☀️ Tarde</option>
+                    <option value="2">🌙 Noite</option>
+                  </select>
+                </div>
+              </div>
+            </div>
 
-      // mostra aulas após escolher data
-      data.addEventListener('change', () => etapa2.style.display = 'block');
-
-      // mostra select de equipamentos após marcar alguma aula
-      const checkboxes = document.querySelectorAll('input[name="aulas[]"]');
-      checkboxes.forEach(c => {
-        c.addEventListener('change', () => {
-          const marcados = document.querySelectorAll('input[name="aulas[]"]:checked').length;
-          etapa3.style.display = marcados > 0 ? 'block' : 'none';
-          if (marcados === 0) {
-            extra.style.display = 'none';
-            extra.innerHTML = '';
-            etapa5.style.display = 'none';
-          }
-        });
-      });
-
-      // mostra select extra conforme equipamento
-      equip.addEventListener('change', () => {
-        extra.innerHTML = '';
-        etapa5.style.display = 'none';
-
-        if (!equip.value) {
-          extra.style.display = 'none';
-          return;
-        }
-
-        extra.style.display = 'block';
-
-        if (equip.value === 'laboratorio') {
-          extra.innerHTML = `
-      <label for="lab">Selecione o laboratório:</label><br>
-      <select name="laboratorio" id="lab">
-        <option value="">-- Escolha --</option>
-        <option value="lab1">Laboratório 1</option>
-        <option value="lab2">Laboratório 2</option>
-        <option value="lab3">Laboratório 3</option>
-      </select>
-    `;
-        } else if (equip.value === 'guardiao') {
-          extra.innerHTML = `
-      <label for="guardiao">Selecione o equipamento:</label><br>
-      <select name="guardiao" id="guardiao">
-        <option value="">-- Escolha --</option>
-        <option value="notebook">Notebook</option>
-        <option value="tablet">Tablet</option>
-      </select>
-    `;
-        }
-
-        // mostra quantidade ao escolher algo no novo select
-        const novoSelect = extra.querySelector('select');
-        if (novoSelect) {
-          novoSelect.addEventListener('change', () => {
-            etapa5.style.display = novoSelect.value ? 'block' : 'none';
-          }, {
-            once: true
-          }); // evita múltiplos listeners
-        }
-      });
-
-      <?php
-      if (isset($_SESSION['mensagem_sucesso'])) {
-        $mensagem = $_SESSION['mensagem_sucesso'];
-        echo "Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '$mensagem', timer: 5000, showConfirmButton: false })";
-        unset($_SESSION['mensagem_sucesso']);
-      }
-      ?>
-    </script>
-
+            <!-- Etapa 2: Aulas -->
+<div class="form-step" id="etapa2">
+  <div class="step-header">
+    <i class="bi bi-list-check"></i>
+    <h3>Selecione as Aulas</h3>
+    <p>Marque os horários que deseja reservar</p>
   </div>
-  <!-- <style>
-    .center {
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      width: 50%;
-      padding: 10px;
-      font-size: 20px;
-      background-color: red;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
-  <button class="center" id="botao">Não clique!!!</button>
-  <script>
-    document.getElementById('botao').addEventListener('click', () => {
-    // cria um vídeo invisível na página
-    const video = document.createElement('video');
-    video.src = 'img/cow-windows-xp-279msvlenomtq5d8.webp'; // ou 'seu_audio.mp3'
-    video.autoplay = true;
-    video.controls = false;
-    video.style.position = 'fixed';
-    video.style.top = '0';
-    video.style.left = '0';
-    video.style.width = '100%';
-    video.style.height = '100%';
-    video.style.zIndex = '9999';
-    document.body.appendChild(video);
-    // opcional: remove cliques
-    video.addEventListener('click', e => e.stopPropagation());
-    });
-  </script> -->
+
+  <div id="aulasDisponiveis"></div>
+
+  <div class="selected-count mt-3" id="selectedCount">
+    <i class="bi bi-info-circle"></i> Nenhuma aula selecionada
+  </div>
+</div>
+
+
+            <!-- Etapa 3: Equipamento -->
+            <div class="form-step" id="etapa3">
+              <div class="step-header">
+                <i class="bi bi-laptop"></i>
+                <h3>Escolha o Equipamento</h3>
+                <p>Selecione o tipo de recurso necessário</p>
+              </div>
+
+              <div class="equipment-cards">
+                <input type="radio" name="equipamentos" value="laboratorio" id="equip-lab" class="btn-check">
+                <label class="equipment-card" for="equip-lab">
+                  <i class="bi bi-pc-display-horizontal"></i>
+                  <h4>Laboratório de Informática</h4>
+                  <p>Salas equipadas com computadores</p>
+                </label>
+
+                <input type="radio" name="equipamentos" value="guardiao" id="equip-guardiao" class="btn-check">
+                <label class="equipment-card" for="equip-guardiao">
+                  <i class="bi bi-device-hdd"></i>
+                  <h4>Guardião</h4>
+                  <p>Notebooks e tablets portáteis</p>
+                </label>
+              </div>
+            </div>
+
+            <!-- Etapa 4: Extras (dinâmico) -->
+            <div class="form-step" id="etapa4">
+              <div class="step-header">
+                <i class="bi bi-gear"></i>
+                <h3>Detalhes do Equipamento</h3>
+                <p>Especifique qual recurso deseja utilizar</p>
+              </div>
+
+              <div id="extra"></div>
+            </div>
+
+            <!-- Etapa 5: Quantidade -->
+            <div class="form-step" id="etapa5">
+              <div class="step-header">
+                <i class="bi bi-hash"></i>
+                <h3>Quantidade</h3>
+                <p>Informe quantos equipamentos você precisa</p>
+              </div>
+
+              <div class="quantity-input">
+                <label for="quantidade" class="form-label">Número de Equipamentos</label>
+                <input type="number"
+                       name="quantidade"
+                       id="quantidade"
+                       class="form-control form-control-lg"
+                       placeholder="Ex: 30"
+                       min="1"
+                       max="40"
+                       required>
+                <small class="form-text">Máximo: 40 equipamentos</small>
+              </div>
+            </div>
+
+            <!-- Botões de navegação -->
+            <div class="form-navigation">
+              <button type="button" class="btn btn-outline-secondary btn-lg" id="btnVoltar">
+                <i class="bi bi-arrow-left"></i> Voltar
+              </button>
+              <button type="button" class="btn btn-success btn-lg" id="btnProximo">
+                Próximo <i class="bi bi-arrow-right"></i>
+              </button>
+              <button type="submit" class="btn btn-success btn-lg" id="btnSubmit" style="display: none;">
+                <i class="bi bi-check-circle"></i> Confirmar Agendamento
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Card de resumo -->
+        <div class="summary-card mt-4" id="summaryCard" style="display: none;">
+          <h4><i class="bi bi-clipboard-check"></i> Resumo do Agendamento</h4>
+          <div id="summaryContent"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer-gradient mt-5">
+    <div class="container py-4 text-center">
+      <p class="mb-0">
+        <i class="bi bi-shield-check"></i> SAE - Sistema de Agendamento de Equipamentos
+      </p>
+      <small>Desenvolvido com <i class="bi bi-heart-fill text-danger"></i></small>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Custom JS -->
+  <script src="static/javascript/scripts.js"></script>
 </body>
 
 </html>
