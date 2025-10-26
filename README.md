@@ -61,4 +61,7 @@ V√° no seu PHPMyAdmin e importe o arquivo `db.sql` para criar as tabelas necess√
 
 - composer require google/apiclient:^2.0
 - composer require vlucas/phpdotenv
-#
+
+
+# Aplicativo com Nim e Flutter
+- Vou tentar desenvolver esse aplicativo usando ``Nim`` ``(backend)`` e ``Flutter`` ``(para o frontend)``
