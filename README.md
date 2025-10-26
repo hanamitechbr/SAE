@@ -63,5 +63,22 @@ Vá no seu PHPMyAdmin e importe o arquivo `db.sql` para criar as tabelas necess�
 - composer require vlucas/phpdotenv
 
 
-## Aplicativo com Nim e Flutter
+# Aplicativo com Nim e Flutter
 - Vou tentar desenvolver esse aplicativo usando ``Nim`` ``(backend)`` e ``Flutter`` ``(para o frontend)``
+
+   ## Requisitos para conseguir rodar (caso seja um desenvolvedor)
+    - jester
+      instale utilizando o comando ``nimble install jester``
+   - Flutter
+      - Instale a extensão ``Flutter`` no VS Code
+      - Aperte ``CTRL + SHIFT + P`` e digite ``"Flutter"``
+      - Clique em ``Flutter: New project``
+      - Instale o SDK e tudo o que a extensão pedir e no fim do processo clique em ``Add SDK to PATH``
+   - Crie um projeto Flutter (você criará durante a instalação do Flutter)
+
+   - Rode o servidor backend
+      - Use o comando ``nim c -r main.nim``
+      - Dê a permissão que o Windows precisa (vai abrir um pop-up, é só clicar em ``Permitir``)
+      - Ele vai listar o seu servidor local no terminal, basta segurar ``CTRL`` e dar um clique em cima do link
+         Ou acesse: ``http://127.0.0.1:5000``
+         Se aparecer ``"API online"``, deu certo. Se não, faz o L.
