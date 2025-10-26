@@ -63,7 +63,7 @@ Vá no seu PHPMyAdmin e importe o arquivo `db.sql` para criar as tabelas necess�
 - composer require vlucas/phpdotenv
 
 
-# Aplicativo com Nim e Flutter
+# Configurar aplicativo teste com Nim + Flutter
 - Vou tentar desenvolver esse aplicativo usando ``Nim`` ``(backend)`` e ``Flutter`` ``(para o frontend)``
 
    ## Requisitos para conseguir rodar (caso seja um desenvolvedor)
@@ -76,9 +76,29 @@ Vá no seu PHPMyAdmin e importe o arquivo `db.sql` para criar as tabelas necess�
       - Instale o SDK e tudo o que a extensão pedir e no fim do processo clique em ``Add SDK to PATH``
    - Crie um projeto Flutter (você criará durante a instalação do Flutter)
 
-   - Rode o servidor backend
+   - Rode o servidor backend:
       - Use o comando ``nim c -r main.nim``
       - Dê a permissão que o Windows precisa (vai abrir um pop-up, é só clicar em ``Permitir``)
-      - Ele vai listar o seu servidor local no terminal, basta segurar ``CTRL`` e dar um clique em cima do link
-         Ou acesse: ``http://127.0.0.1:5000``
-         Se aparecer ``"API online"``, deu certo. Se não, faz o L.
+      - Ele vai listar o seu servidor local no terminal, basta segurar ``CTRL`` e dar um clique em cima do link ou acesse: ``http://127.0.0.1:5000``. Se aparecer ``"API online"``, é porque o servidor local backend já tá rodando. Se não, faz o L.
+
+   - Rode o Flutter:
+      - Use o comando ``flutter run -d windows``
+      - Se der erro, muito provavelmente vai ser no arquivo ``pubspec.yaml``
+      - Procure por ele na raiz da pasta do seu projeto do Flutter
+      - Encontre:
+         ``` 
+            dependencies:
+               flutter:
+                  sdk: flutter
+         ```
+      - E adicione a linha ``http: ^1.2.0``, respeite a tabulação e os espaços e deixe assim:
+         ```
+         dependencies:
+               flutter:
+                  sdk: flutter
+               http: ^1.2.0
+         ```
+      - Depois disso tente rodar de novo o Flutter: ``flutter run -d windows``
+         - Se rodar, ele vai abrir uma janela com o aplicativo. Se não, senta e chora, afinal, eu não consigo ajudar dizer agora como resolver porque não passei por esse erro ainda 👍
+
+   
