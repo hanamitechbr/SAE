@@ -1,7 +1,7 @@
 <?php
 require_once 'config.php';
 require_once 'database.php';
-session_start();
+// session_start();
 
 // converte warnings/notices em exceções
 set_error_handler(function ($severity, $message, $file, $line) {
@@ -40,7 +40,7 @@ function sendErrorAndExit($title, $meta = [])
     ];
     $_SESSION['oauth_error'] = $payload;
     // redireciona para página de erro (altere se necessário)
-    header('Location: /agendamentos/error.php');
+    header('Location: /SAE/error.php');
     exit;
 }
 
