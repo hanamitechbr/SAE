@@ -16,7 +16,7 @@
       <i class="bi bi-calendar-event-fill">
         <input type="text" id="data" placeholder="Selecionar data">
       </i> <br>
-      <div class="aulas-container">
+      <div class="aulas-container" style="display:flex; flex-direction:column;">
         <label>
           <input type="checkbox" name="aulas[]" value="1">
           <span>Aula 1</span>
@@ -74,7 +74,7 @@
               // minDate: "today",
               // maxDate: new Date().fp_incr(30),
               disable: [
-                data,
+                data, //variável que está a data
                 // function(date) {
                 //   // bloquear fins de semana
                 //   return (date.getDay() === 0 || date.getDay() === 6);

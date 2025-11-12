@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require 'config.php';
 
 // Se já estiver logado, redirecionar para dashboard
 if (isset($_SESSION['user_id'])) {
