@@ -1,7 +1,7 @@
 <?php
 error_log("Entrou no callback.php");
 require_once 'config.php';
-require_once 'src/database.php';
+require_once 'database.php';
 // session_start();
 
 // converte warnings/notices em exceções

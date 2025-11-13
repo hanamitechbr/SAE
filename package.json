@@ -1,0 +1,25 @@
+{
+  "name": "sae",
+  "version": "1.0.0",
+  "description": "Sistema simples para suprir uma necessidade interna da escola. Permite que os professores agendem equipamentos como `Tablets`, `Notebooks` e os `Labs. de Informática`.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alef-ss/SAE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alef-ss/SAE/issues"
+  },
+  "homepage": "https://github.com/alef-ss/SAE#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "node": "^25.1.0",
+    "pg": "^8.16.3"
+  }
+}
