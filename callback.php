@@ -1,7 +1,8 @@
 <?php
+error_log("Entrou no callback.php");
 require_once 'config.php';
-require_once 'database.php';
-session_start();
+require_once 'src/database.php';
+// session_start();
 
 // converte warnings/notices em exceções
 set_error_handler(function ($severity, $message, $file, $line) {
@@ -40,11 +41,12 @@ function sendErrorAndExit($title, $meta = [])
     ];
     $_SESSION['oauth_error'] = $payload;
     // redireciona para página de erro (altere se necessário)
-    header('Location: /agendamentos/error.php');
+    header('Location: /SAE/error.php');
     exit;
 }
 
 try {
+    error_log("Antes de fetchAccessTokenWithAuthCode");
     // Verificar se recebeu o código
     if (!isset($_GET['code'])) {
         // não trata como fatal: apenas redireciona com info
@@ -61,6 +63,8 @@ try {
         'redirect_uri' => GOOGLE_REDIRECT_URI,
         'grant_type' => 'authorization_code'
     ];
+    error_log("Iniciando requisição de token");
+
 
     $ch = curl_init(GOOGLE_TOKEN_URL);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -99,6 +103,8 @@ try {
         ]);
     }
 
+    error_log("Depois de fetchAccessTokenWithAuthCode");
+
     // Obter informações do usuário
     $ch = curl_init(GOOGLE_USER_INFO_URL);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -107,6 +113,7 @@ try {
     ]);
     curl_setopt($ch, CURLOPT_TIMEOUT, 15);
     $response = curl_exec($ch);
+    error_log("Resposta do token endpoint: " . $response);
     $curlErrNo = curl_errno($ch);
     $curlErr = curl_error($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -140,18 +147,25 @@ try {
     }
 
     // Salvar usuário no banco de dados (supondo que saveUser exista)
-    $userId = saveUser(
-        $userInfo['id'],
-        $userInfo['name'] ?? null,
-        $userInfo['email'] ?? null,
-        $userInfo['picture'] ?? null
-    );
+        try {
+            $userId = saveUser(
+                $userInfo['id'],
+                $userInfo['name'] ?? null,
+                $userInfo['email'] ?? null,
+                $userInfo['picture'] ?? null
+            );
 
-    if (!$userId) {
-        sendErrorAndExit('Falha ao salvar usuário no banco', [
-            'userinfo' => $userInfo
-        ]);
-    }
+            if (!$userId) {
+                sendErrorAndExit('Falha ao salvar usuário no banco', [
+                    'userinfo' => $userInfo
+                ]);
+            }
+        } catch (Exception $e) {
+            sendErrorAndExit('Erro ao conectar ao banco de dados', [
+                'error' => $e->getMessage(),
+                'userinfo' => $userInfo
+            ]);
+        }
 
     // Salvar na sessão
     $_SESSION['user_id'] = $userId;
