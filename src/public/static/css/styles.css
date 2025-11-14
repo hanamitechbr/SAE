@@ -1,0 +1,56 @@
+:root {
+  /* ======= Cores Principais ======= */
+
+  --color-primary: #e3274c; /* Cor principal (rosa avermelhado explosivo) – botões principais, destaques e elementos de ação */
+  --color-primary-dark: #b81f3d; /* Versão mais escura – hover de botões, bordas de foco, elementos ativos */
+  --color-primary-light: #f56980; /* Versão mais clara – backgrounds suaves, badges, efeitos de destaque */
+
+  /* ======= Neutras / Fundos ======= */
+
+  --color-bg: #fff7f8; /* Fundo geral do body */
+  --color-bg-secondary: #f4e9eb; /* Fundo de seções, cards leves e containers */
+  --color-surface: #ffffff; /* Superfícies como cards, inputs, modais */
+
+  /* ======= Tipografia ======= */
+
+  --color-text-main: #2a2a2a; /* Texto principal (títulos e textos de leitura) */
+  --color-text-secondary: #4f4f4f; /* Subtítulos e textos complementares */
+  --color-text-light: #8b8b8b; /* Placeholders, labels secundários, descrições */
+
+  /* ======= Interativos ======= */
+
+  --color-input-bg: #ffffff; /* Fundo dos inputs */
+  --color-input-border: #d8c6c9; /* Bordas de inputs, selects e áreas de formulário */
+  --color-input-border-focus: #e3274c; /* Foco do input (usa a cor principal) */
+
+  --color-btn-text: #ffffff; /* Letras dos botões primários */
+  --color-btn-secondary: #fcd6dd; /* Botões secundários / outlines */
+  --color-btn-secondary-text: #b81f3d; /* Texto de botões secundários */
+
+  /* ======= Outros ======= */
+
+  --color-border: #e2d5d7; /* Bordas gerais de cards, divisores, inputs */
+  --color-shadow: #00000014; /* Sombra suave para cards e modais */
+}
+
+body {
+  background: var(--color-bg);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  height: 100vh;
+}
+
+.container-form {
+  width: auto;
+  height: auto;
+  background-color: var(--color-bg-secondary);
+  padding: 20px;
+}
+.data {
+  border: none;
+  border-radius: 15px;
+  padding: 20px;
+  width: 20px; height: 20px ;
+  cursor: pointer;
+}

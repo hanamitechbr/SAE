@@ -1,8 +1,9 @@
 <?php
-require "../database.php";
+require "../database.php"; // Importa a conexão com o banco
 
-header('Content-Type: application/json');
+header('Content-Type: application/json'); // Define o retorno como JSON
 
+// Captura a data enviada via GET
 $data = $_GET['data'] ?? '';
 
 if (empty($data)) {
@@ -10,8 +11,10 @@ if (empty($data)) {
     exit;
 }
 
+// Converte a data recebida para o formato do banco (YYYY-MM-DD)
 $data_para_db = date('Y-m-d', strtotime($data));
 
+// Query para buscar aulas já agendadas na data escolhida
 $sql = "
   SELECT a.aula, p.nome AS nome_professor
   FROM agendamentos a
@@ -20,20 +23,23 @@ $sql = "
   ORDER BY a.aula;
 ";
 
-$pdo                  = db();
-$aulas_ocupadas       = [];
-$total_aulas_ocupadas = 0;
-$total_aulas          = 6;
+$pdo                  = db(); // Conexão com o banco
+$aulas_ocupadas       = [];   // Array para armazenar aulas ocupadas
+$total_aulas_ocupadas = 0;    // Contador de aulas ocupadas
+$total_aulas          = 6;    // Número total de aulas possíveis no dia
 
 try {
+    // Prepara a query
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':data', $data_para_bd, PDO::PARAM_STR);
+    // Corrigido: variável correta é $data_para_db
+    $stmt->bindValue(':data', $data_para_db, PDO::PARAM_STR);
     $stmt->execute();
 
+    // Percorre os resultados e marca as aulas ocupadas
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $aula_num = (int) $row['aula'];
 
-        // Armazena a aula e o nome do professor para retorno
+        // Armazena a aula ocupada e o professor responsável
         $aulas_ocupadas[$aula_num] = [
             'ocupada'   => true,
             'professor' => $row['nome_professor'],
@@ -41,13 +47,14 @@ try {
         $total_aulas_ocupadas++;
     }
 
+    // Verifica se todas as aulas do dia estão ocupadas
     $dia_totalmente_ocupado = ($total_aulas_ocupadas >= $total_aulas);
 
-    // 6. Prepara a resposta em JSON
+    // Prepara a resposta em JSON
     $resposta = [
-        'dia_bloqueado'  => $dia_totalmente_ocupado,
-        'aulas_ocupadas' => $aulas_ocupadas,
-        'total_ocupadas' => $total_aulas_ocupadas,
+        'dia_bloqueado'  => $dia_totalmente_ocupado, // true se todas ocupadas
+        'aulas_ocupadas' => $aulas_ocupadas,         // lista das aulas ocupadas
+        'total_ocupadas' => $total_aulas_ocupadas,   // número de aulas ocupadas
     ];
 
     echo json_encode($resposta);

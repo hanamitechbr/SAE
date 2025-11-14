@@ -177,7 +177,7 @@ try {
     unset($_SESSION['oauth_error']);
 
     // Redirecionar para dashboard
-    header('Location: calendario.php');
+    header('Location: src/public/fazer_agendamento.php');
     exit;
 } catch (Throwable $e) {
     sendErrorAndExit('Exceção disparada', [
