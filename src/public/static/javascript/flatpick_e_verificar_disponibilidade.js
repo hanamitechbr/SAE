@@ -1,4 +1,4 @@
-// Util: formata Date para 'YYYY-MM-DD' (formato esperado pelo PHP)
+// Utility: format Date to 'YYYY-MM-DD'
 function formatDateToYMD(dateObj) {
   const year = dateObj.getFullYear();
   const month = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -6,33 +6,26 @@ function formatDateToYMD(dateObj) {
   return `${year}-${month}-${day}`;
 }
 
-// Inicializa o flatpickr no input #data
-
-let diasBloqueados = [];
-
+// Initialize Flatpickr
 const fp = flatpickr('#data', {
-  // Formato do valor real do input (visível se você ler input.value)
   dateFormat: 'd-m-Y',
-  // Mostra um campo alternativo bonito e mantém o original oculto
+  defaultDate: 'today',
   altInput: true,
-  altFormat: 'D d, M Y', // ex.: Thu 13, Nov 2025
+  altFormat: 'l d, F Y',
   locale: 'pt',
-
-  // Datas desabilitadas fixas (exemplo); você pode atualizar dinamicamente depois
+  minDate: 'today',
   disable: ['14-11-2025'],
-
-  // Callback disparado quando o usuário escolhe uma data
-  onChange: function (selectedDates, dateStr, instance) {
-    // selectedDates[0] é um objeto Date da data escolhida
+  onChange: function (selectedDates) {
     if (selectedDates.length > 0) {
-      const ymd = formatDateToYMD(selectedDates[0]); // '2025-11-13'
-      verificarDisponibilidade(ymd); // Chama o AJAX com o formato correto
+      const ymd = formatDateToYMD(selectedDates[0]);
+      updateSummary();
+      verificarDisponibilidade(ymd);
     }
   },
 });
 
+// Verify availability
 function verificarDisponibilidade(dataYMD) {
-  // Monta a URL com a data no formato YYYY-MM-DD (compatível com seu PHP)
   const url = `../buscar_disponibilidade.php?data=${encodeURIComponent(
     dataYMD
   )}`;
@@ -43,7 +36,7 @@ function verificarDisponibilidade(dataYMD) {
       return response.json();
     })
     .then((data) => {
-      // 1) Reset: libera todos os checkboxes e limpa texto
+      // Reset all checkboxes
       for (let i = 1; i <= 6; i++) {
         const checkbox = document.getElementById(`aula-${i}`);
         const infoSpan = document.getElementById(`info-aula-${i}`);
@@ -53,27 +46,23 @@ function verificarDisponibilidade(dataYMD) {
         }
         if (infoSpan) {
           infoSpan.textContent = '';
-          infoSpan.style.color = '';
         }
       }
 
-      // 2) Se o dia está totalmente ocupado, bloqueia tudo e avisa
+      // Check if day is fully blocked
       if (data.dia_bloqueado === true) {
         for (let i = 1; i <= 6; i++) {
           const checkbox = document.getElementById(`aula-${i}`);
           const infoSpan = document.getElementById(`info-aula-${i}`);
           if (checkbox) checkbox.disabled = true;
           if (infoSpan) {
-            infoSpan.textContent = ' (Dia totalmente ocupado)';
-            infoSpan.style.color = 'red';
+            infoSpan.textContent = '(Dia totalmente ocupado)';
           }
         }
-        // Opcional: adiciona a data ao "disable" do flatpickr dinamicamente
-        // fp.set('disable', [...fp.config.disable, instance.input.value]); // cuidado com formato
-        return; // já bloqueou tudo
+        return;
       }
 
-      // 3) Bloqueia individualmente as aulas ocupadas
+      // Disable individual occupied classes
       if (data.aulas_ocupadas && typeof data.aulas_ocupadas === 'object') {
         Object.keys(data.aulas_ocupadas).forEach((aulaNum) => {
           const aulaInfo = data.aulas_ocupadas[aulaNum];
@@ -82,19 +71,99 @@ function verificarDisponibilidade(dataYMD) {
 
           if (aulaInfo && aulaInfo.ocupada) {
             if (checkbox) {
-              checkbox.disabled = true; // Desabilita a seleção
-              checkbox.checked = false; // Garante desmarcado
+              checkbox.disabled = true;
+              checkbox.checked = false;
             }
             if (infoSpan) {
-              infoSpan.textContent = ` (Ocupada por: ${aulaInfo.professor})`;
-              infoSpan.style.color = 'red';
+              infoSpan.textContent = `(Ocupada por: ${aulaInfo.professor})`;
             }
           }
         });
       }
     })
     .catch((error) => {
-      console.error('Erro na requisição AJAX:', error);
+      console.error('Erro na requisição:', error);
       alert('Houve um erro ao buscar a disponibilidade.');
     });
 }
+
+// Update summary card
+function updateSummary() {
+  const dataInput = document.getElementById('data');
+  const turnoLabels = {
+    manha: 'Manhã',
+    tarde: 'Tarde',
+    noite: 'Noite',
+  };
+
+  // Update date
+  const dateValue = dataInput.value;
+
+  if (dateValue) {
+    // SEPARANDO a string d-m-Y (ex: "18-11-2025")
+    const [day, month, year] = dateValue.split('-');
+
+    // CRIANDO a data de forma robusta.
+    // Usamos o formato YYYY-MM-DD para garantir que o JS interprete corretamente.
+    // 'month' é subtraído por 1 porque os meses em JS vão de 0 (janeiro) a 11 (dezembro).
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
+
+    // Verifica se a data é válida antes de formatar
+    if (!isNaN(date.getTime())) {
+      const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      };
+      // Garante que o idioma seja português do Brasil para o formato completo
+      const formattedDate = date.toLocaleDateString('pt-BR', options);
+
+      document.getElementById('summary-data').textContent = formattedDate;
+    } else {
+      // Lida com o caso de a string de data ser inválida
+      document.getElementById('summary-data').textContent = 'Data inválida';
+    }
+  } else {
+    document.getElementById('summary-data').textContent = 'Não selecionada';
+  }
+
+  // Update shifts
+  const selectedTurnos = [];
+  ['manha', 'tarde', 'noite'].forEach((turno) => {
+    if (document.getElementById(turno).checked) {
+      selectedTurnos.push(turnoLabels[turno]);
+    }
+  });
+  document.getElementById('summary-turnos').textContent =
+    selectedTurnos.length > 0 ? selectedTurnos.join(', ') : 'Nenhum';
+
+  // Update classes
+  const selectedAulas = [];
+  for (let i = 1; i <= 6; i++) {
+    if (document.getElementById(`aula-${i}`).checked) {
+      selectedAulas.push(`Aula ${i}`);
+    }
+  }
+  document.getElementById('summary-aulas').textContent =
+    selectedAulas.length > 0 ? selectedAulas.join(', ') : 'Nenhuma';
+}
+
+// Event listeners for real-time summary update
+document.getElementById('manha').addEventListener('change', updateSummary);
+document.getElementById('tarde').addEventListener('change', updateSummary);
+document.getElementById('noite').addEventListener('change', updateSummary);
+
+for (let i = 1; i <= 6; i++) {
+  document
+    .getElementById(`aula-${i}`)
+    .addEventListener('change', updateSummary);
+}
+
+// Add keyboard support
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && e.target.closest('.aula-label')) {
+    e.preventDefault();
+    e.target.closest('.aula-checkbox').click();
+  }
+});

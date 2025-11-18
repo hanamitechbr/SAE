@@ -2,11 +2,11 @@
 require "../database.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $professor_id       = 1;
-    $periodo            = 1;
-    $data               = $_POST['data'];
-    // Ajuste 1: Se o input for de texto (e não type="date"), garanta que o formato seja Y-m-d (MySQL)
-    $data_para_bd       = date('Y-m-d', strtotime($data)); // Use a variável que será inserida
+    $professor_id = 1;
+    $periodo      = 1;
+    $data         = $_POST['data'];
+                                                     // Ajuste 1: Se o input for de texto (e não type="date"), garanta que o formato seja Y-m-d (MySQL)
+    $data_para_bd = date('Y-m-d', strtotime($data)); // Use a variável que será inserida
 
     $aulas_selecionadas = $_POST['aulas'] ?? [];
 
@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Ajuste 2: Mover os bindValue e a execução para dentro do loop
             $stmt->bindValue(':professor_id', $professor_id, PDO::PARAM_INT);
             $stmt->bindValue(':data', $data_para_bd, PDO::PARAM_STR); // Ajuste 3: Usar a data formatada
-            $stmt->bindValue(':aula', $aula, PDO::PARAM_INT); // Usar o valor $aula do loop atual
+            $stmt->bindValue(':aula', $aula, PDO::PARAM_INT);         // Usar o valor $aula do loop atual
             $stmt->bindValue(':periodo', $periodo, PDO::PARAM_INT);
 
             try {
@@ -51,15 +51,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } // Fim do loop
 
         $pdo->commit();
-
-        echo "Sucesso! Agendamento(s) cadastrado(s) **$sucesso**,<br>";
-        if ($erros > 0) {
-            echo "Agendamento(s) ignorado(s) por duplicidade: **$erros**.<br>";
+        if ($sucesso) {
+            $_SESSION['mensagem']      = "Agendamento cadastrado com sucesso!";
+            $_SESSION['tipo_mensagem'] = "success";
+        } elseif ($erros > 0) {
+            $_SESSION['mensagem'] = "Alguns agendamentos foram ignorados por duplicidade: $erros";
+            $_SESSION['tipo_mensagem'] = "error";
         }
+
+        header("Location: public/fazer_agendamento.php");
+        // echo "Sucesso! Agendamento(s) cadastrado(s) **$sucesso**,<br>";
+        // if ($erros > 0) {
+        //     echo "Agendamento(s) ignorado(s) por duplicidade: **$erros**.<br>";
+        // }
     } catch (\Exception $e) {
-      $pdo->rollBack();
-      echo "Erro fatal durante o agendamento:" . $e->getMessage();
+        $pdo->rollBack();
+        echo "Erro fatal durante o agendamento:" . $e->getMessage();
     }
 } else {
-  echo "Acesso inválido. Use o formulário.";
+    echo "Acesso inválido. Use o formulário.";
 }
