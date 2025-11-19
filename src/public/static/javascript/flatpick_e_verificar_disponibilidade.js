@@ -32,7 +32,7 @@ function verificarDisponibilidade(dataYMD) {
 
   fetch(url)
     .then((response) => {
-      if (!response.ok) throw new Error('Erro na rede ou no servidor.');
+      if (!response.ok) throw new Error('Erro -- Verifique se o Apache está iniciado ou se você está conectado à internet.');
       return response.json();
     })
     .then((data) => {

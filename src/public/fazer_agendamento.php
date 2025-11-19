@@ -102,6 +102,45 @@
             </div>
           </section>
 
+          <!-- Equipamentos -->
+          <section class="form-section">
+            <div class="section-header">
+              <h2 class="section-title">
+                <!-- Ícone geral para a seção de equipamentos -->
+                <i class="bi bi-motherboard"></i>
+                Selecione o Equipamento
+              </h2>
+            </div>
+
+            <div class="equipamento-grid">
+
+              <!-- Opção para "Lab. de Informática" -->
+              <!-- Cada item de seleção deve ter seu próprio <label> associado ao seu respectivo <input> -->
+              <label for="informatica" class="equipamento-label">
+                <!-- O <input> é associado ao <label> pelo atributo 'for' e 'id' -->
+                <input type="checkbox" name="tipo_equipamento" id="informatica" class="equipamento-checkbox">
+                <span class="equipamento-content">
+                  <!-- Ícone representativo para laboratório/computador -->
+                  <i class="bi bi-pc-display-horizontal"></i>
+                  <div class="equipamento-name">Lab. de Informática</div>
+                </span>
+              </label>
+
+              <!-- Opção para "Guardião" (Carrinho de Carregamento) -->
+              <label for="guardiao" class="equipamento-label">
+                <!-- O <input> é associado ao <label> pelo atributo 'for' e 'id' -->
+                <input type="checkbox" name="tipo_equipamento" id="guardiao" class="equipamento-checkbox">
+                <span class="equipamento-content">
+                  <!-- Ícone sugerido para o "Guardião" (um rack ou estante com engrenagens) -->
+                  <i class="bi bi-gear-wide-connected"></i>
+                  <div class="equipamento-name">Guardião</div>
+                </span>
+              </label>
+
+            </div>
+          </section>
+
+
           <!-- Section: Turnos -->
           <section class="form-section">
             <div class="section-header">
@@ -114,7 +153,7 @@
               <label class="turno-label">
                 <input type="checkbox" name="selecao" id="manha" class="turno-checkbox" onclick="handleCheckboxClick(this)">
                 <span class="turno-content">
-                  <i class="bi bi-sun"></i>
+                  <i class="bi bi-brightness-alt-high"></i>
                   <div>
                     <div class="turno-name">Manhã</div>
                     <div class="turno-time">07:00 - 12:00</div>
@@ -228,15 +267,15 @@
         </h3>
         <div class="summary-content">
           <div class="summary-item">
-            <span class="summary-label">Data:</span>
+            <span class="summary-label">Data</span>
             <span class="summary-value" id="summary-data">Não selecionada</span>
           </div>
           <div class="summary-item">
-            <span class="summary-label">Turnos:</span>
+            <span class="summary-label">Turno</span>
             <span class="summary-value" id="summary-turnos">Nenhum</span>
           </div>
           <div class="summary-item">
-            <span class="summary-label">Aulas:</span>
+            <span class="summary-label">Aulas</span>
             <span class="summary-value" id="summary-aulas">Nenhuma</span>
           </div>
         </div>

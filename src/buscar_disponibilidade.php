@@ -5,6 +5,7 @@ header('Content-Type: application/json'); // Define o retorno como JSON
 
 // Captura a data enviada via GET
 $data = $_GET['data'] ?? '';
+$equipamento_informatica = $_GET['lab-informatica'];
 
 if (empty($data)) {
     echo json_encode(['error' => 'Data não fornecida']);
